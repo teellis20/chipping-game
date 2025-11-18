@@ -97,9 +97,9 @@ export default function Home() {
 
   return (
     <>
-    <div className="flex flex-col min-h-screen items-center font-sans dark:bg-black bg-green-300">
-      <h1 className="text-4xl font-bold text-zinc-800 dark:text-zinc-200 mt-5">Chipping Game</h1>
-        <h2 className="text-2xl font-semibold mb-4 text-zinc-800 dark:text-zinc-200">({getMondayofWeek()} - {getSundayofWeek()})</h2>
+    <div className="flex flex-col min-h-screen items-center font-sans bg-green-300">
+      <h1 className="text-4xl font-bold text-zinc-800 mt-5">Chipping Game</h1>
+        <h2 className="text-2xl font-semibold mb-4 text-zinc-800">({getMondayofWeek()} - {getSundayofWeek()})</h2>
 
       <Leaderboard players={players}/>
       <ScoreInput onSubmit={handleScoreSubmit} players={players} />
