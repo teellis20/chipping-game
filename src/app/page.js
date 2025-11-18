@@ -102,7 +102,7 @@ export default function Home() {
         <h2 className="text-2xl font-semibold mb-4 text-zinc-800 dark:text-zinc-200">({getMondayofWeek()} - {getSundayofWeek()})</h2>
 
       <Leaderboard players={players}/>
-      <ScoreInput onSubmit={handleScoreSubmit} />
+      <ScoreInput onSubmit={handleScoreSubmit} players={players} />
         <button
           className="mb-6 mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={() => {

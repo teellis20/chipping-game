@@ -2,7 +2,7 @@
 import { useState } from "react";
 import './ScoreInput.css';
 
-const ScoreInput = ({ onSubmit }) => {
+const ScoreInput = ({ onSubmit, players }) => {
   const [score, setScore] = useState(0);
   const [percent, setPercent] = useState(0);
   const [player, setPlayer] = useState("");
@@ -33,9 +33,9 @@ const ScoreInput = ({ onSubmit }) => {
     <div className="container">
         <select className="player-select" name="player" id="player-select" value={player} onChange={(e) => setPlayer(e.target.value)}>
             <option disabled value="">Select Player</option>
-            <option value="Tbag">T-bag</option>
-            <option value="Skippy">Skippy</option>
-            <option value="Dave">Dave</option>
+            {players?.map((p) => (
+                <option key={p.id} value={p.name}>{p.name}</option>
+            ))}
         </select>
       <div className="input-container">
         <label htmlFor="score">Enter Score:</label>
