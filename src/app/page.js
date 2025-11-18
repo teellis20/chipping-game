@@ -60,9 +60,18 @@ export default function Home() {
     return sunday.toLocaleDateString();
   }
 
-  const getLastWeeksWinner = () => {
-    // Placeholder logic for last week's winner
-    alert("Last week's winner was T with a score of 66!");
+  const getLastWeeksWinner = async () => {
+    try {
+      const response = await fetch('/api/last-winner');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      alert(`Last week's winner was ${data.winner[0].name} with a score of ${data.winner[0].totalScore} and a percentage of ${data.winner[0].percent}%!`);
+    } catch (error) {
+      console.error('Failed to fetch last week\'s winner:', error);
+      alert("Failed to fetch last week's winner.");
+    }
   }
 
   const handleScoreSubmit = async (data) => {
