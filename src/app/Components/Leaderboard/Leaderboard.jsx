@@ -60,7 +60,7 @@ const Leaderboard = ({ players }) => {
         <div>PERCENT</div>
       </div>
       { playersState.map((player, index) => (
-        <PlayerRow key={player.id} player={player} rank={index + 1} />
+        <PlayerRow key={player._id} player={player} rank={index + 1} />
       ))}
     </div>
   );

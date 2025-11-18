@@ -5,6 +5,29 @@ import ScoreInput from "./Components/ScoreInput/ScoreInput";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dbConnected, setDbConnected] = useState(false);
+
+  useEffect(() => {
+    const checkDbConnection = async () => {
+      try {
+        const response = await fetch('/api/set-up');
+        // if (!response.ok) {
+        //   throw new Error('Network response was not ok');
+        // }
+        const data = await response.json();
+        console.log('Database connection status:', data);
+        setDbConnected(true);
+      } catch (error) {
+        console.error('Failed to check database connection:', error);
+        setDbConnected(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkDbConnection();
+  }, []);
 
   useEffect(() => {
         // fetch here to get player data
@@ -22,27 +45,11 @@ export default function Home() {
       }
     }
 
-    fetchPlayers();
-  }, []);
+    if (dbConnected) { 
+      fetchPlayers();
+    }
+  }, [dbConnected]);
 
-  const checkIfBetterThanCurrentBest = (newData) => {
-    console.log('Checking new data against current best:', newData);
-    const player = players.find(p => p.name === newData.name);
-    console.log('Current player data:', player);
-    if (!player) return false;
-    const newScore = newData.totalScore > player.totalScore ? newData.totalScore : player.totalScore;
-    const newPercent = newData.percent > player.percent ? newData.percent : player.percent;
-    console.log('Updating player with new score and percent:', newScore, newPercent);
-
-    const updatedPlayers = players.map(p => {
-      if (p.name === newData.name) {
-        return { ...p, totalScore: newScore, percent: newPercent };
-      }
-      return p;
-    });
-    setPlayers(updatedPlayers);
-    return true;  
-  }
 
   const getMondayofWeek = () => {
     const today = new Date();
@@ -63,9 +70,6 @@ export default function Home() {
   const getLastWeeksWinner = async () => {
     try {
       const response = await fetch('/api/last-winner');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
       const data = await response.json();
       alert(`Last week's winner was ${data.winner[0].name} with a score of ${data.winner[0].totalScore} and a percentage of ${data.winner[0].percent}%!`);
     } catch (error) {
@@ -74,8 +78,35 @@ export default function Home() {
     }
   }
 
+  const checkIfBetterThanCurrentBest = (newData) => {
+    console.log('Checking new data against current best:', newData);
+    const player = players.find(p => p.name === newData.name);
+    if (!player) return false;
+    if (newData.totalScore <= player.totalScore && newData.percent <= player.percent) {
+      console.log('No update needed, current best is better or equal.');
+      return false;
+    }
+      
+    const newScore = newData.totalScore > player.totalScore ? newData.totalScore : player.totalScore;
+    const newPercent = newData.percent > player.percent ? newData.percent : player.percent;
+    console.log('Updating player with new score and percent:', newScore, newPercent);
+
+    const updatedPlayers = players.map(p => {
+      if (p.name === newData.name) {
+        return { ...p, totalScore: newScore, percent: newPercent };
+      }
+      return p;
+    });
+    setPlayers(updatedPlayers);
+    return true;  
+  }
+
   const handleScoreSubmit = async (data) => {
     console.log("Score submitted:", data);
+    if (!checkIfBetterThanCurrentBest(data)) {
+      console.log('Submitted score was not better than current best, not sending to backend.');
+      return;
+    }
     // Here you would typically send the data to your backend API
     try {
       const response = await fetch('/api/post-score', {
@@ -86,12 +117,19 @@ export default function Home() {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log('Score submission response:', result);
-      checkIfBetterThanCurrentBest(result.data);
-      console.log('Updated players after submission:', players);
+      console.log('Score submission response:', result.message);
+
     } catch (error) {
       console.error('Error submitting score:', error);
     }
+  }
+
+  if (loading) {
+    return <div className="flex flex-col min-h-screen items-center font-sans bg-green-300"><h1>Loading...</h1></div>;
+  }
+
+  if (!dbConnected) {
+    return <div className="flex flex-col min-h-screen items-center font-sans bg-green-300"><h1>Database connection failed. Please try again later.</h1></div>;
   }
 
 

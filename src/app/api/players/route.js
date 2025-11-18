@@ -1,14 +1,21 @@
+import Player from '../../../Models/Player';
 
 export async function GET() {
-    console.log('API route /api/hello called');
+    console.log('API route /api/players called');
 
-    const initialPlayers = [
-  { id: 1, name: 'T', totalScore: 66, percent: 93 },
-  { id: 2, name: 'Skippy', totalScore: 35, percent: 33 },
-  { id: 3, name: 'Dave', totalScore: 0, percent: 0 },
-];
+    const players = await Player.find({}).lean();
 
-  return new Response(JSON.stringify({ message: 'Hello from Next.js API!', players: initialPlayers }), {
+    if (!players) {
+        return new Response(JSON.stringify({ message: 'No players found' }), {
+            status: 404,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+
+  return new Response(JSON.stringify({ message: 'Hello from Next.js API!', players }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json'

@@ -34,7 +34,7 @@ const ScoreInput = ({ onSubmit, players }) => {
         <select className="player-select" name="player" id="player-select" value={player} onChange={(e) => setPlayer(e.target.value)}>
             <option disabled value="">Select Player</option>
             {players?.map((p) => (
-                <option key={p.id} value={p.name}>{p.name}</option>
+                <option key={p._id} value={p.name}>{p.name}</option>
             ))}
         </select>
       <div className="input-container">
