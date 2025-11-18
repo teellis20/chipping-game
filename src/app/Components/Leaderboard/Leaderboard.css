@@ -1,0 +1,50 @@
+.leaderboard-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+.leaderboard-header, .player-row {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr;
+  padding: 10px;
+  /* border-bottom: 1px solid #eee; */
+  align-items: center;
+  text-align: center;
+}
+
+.leaderboard-header {
+  font-weight: bold;
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+.player-row:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.player-rank, .player-total, .player-percent {
+  text-align: center;
+
+}
+
+.player-total, .player-percent {
+  border: 2px solid #a0a0a0;
+  border-radius: 25%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #4caf50;
+  background-color: #fff;
+}
+
+

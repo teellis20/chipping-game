@@ -1,0 +1,114 @@
+/* Flip-card styles for NumberFlip */
+.flip-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  perspective: 600px;
+}
+
+.flip-card {
+  display: inline-block;
+  backface-visibility: hidden;
+  transform-origin: top center;
+  /* provide a default half duration; overridden via inline style on wrapper */
+  --half-duration: 350ms;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes flipOut {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-90deg); }
+}
+
+@keyframes flipIn {
+  from { transform: rotateX(90deg); }
+  to   { transform: rotateX(0deg); }
+}
+
+.flip-out {
+  animation-name: flipOut;
+  animation-duration: var(--half-duration);
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.flip-in {
+  animation-name: flipIn;
+  animation-duration: var(--half-duration);
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+/* Position front/back cards so they stack and occupy the same box */
+.flip-wrapper {
+  position: relative;
+}
+
+.flip-wrapper.flash {
+  transform: scale(1.04);
+  transition: transform 180ms ease;
+}
+
+.flip-wrapper.flash .flip-card {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.flip-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+/* Back (incoming) should start hidden behind the front; when animating in it rotates from 90deg -> 0 */
+.flip-card.back {
+  transform: rotateX(90deg);
+}
+
+/* Front (outgoing) starts at 0 and when animating out rotates to -90deg */
+.flip-card.front {
+  transform: rotateX(0deg);
+}
+
+/* Ensure the card content doesn't shift when numbers change */
+.player-total .flip-wrapper, .player-percent .flip-wrapper {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.player-total .flip-card, .player-percent .flip-card {
+  min-width: 2.2rem;
+  text-align: center;
+  font-weight: 600;
+  /* make the flip-card occupy the whole parent box and have the border/background */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid #5f5f5f;
+  border-radius: 25%;
+  background-color: #fff;
+  color: #4caf50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+  font-size: 1rem;
+}
+
+/* Remove the static box styling from the container so the flip-card shows the border */
+.player-total, .player-percent {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
