@@ -1,25 +1,20 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use} from 'react';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import './Leaderboard.css'; // Assume CSS file for styling
 
-const initialPlayers = [
-  { id: 1, name: 'T', totalScore: 66, percent: 93 },
-  { id: 2, name: 'Skippy', totalScore: 35, percent: 33 },
-  { id: 3, name: 'Dave', totalScore: 0, percent: 0 },
-];
 
-
-
-
-const Leaderboard = () => {
-  const [players, setPlayers] = useState(initialPlayers);
+const Leaderboard = ({ players }) => {
+  const [playersState, setPlayersState] = useState(players || []);
 
   useEffect(() => {
-    // fetch here to get player data
+    console.log("Leaderboard received players:", players);
+    const playersSorted = [...players].sort((a, b) => b.totalScore - a.totalScore);
+    setPlayersState(playersSorted);
+
     // Sort players by total score once on initial load
-    setPlayers(prev => [...prev].sort((a, b) => b.totalScore - a.totalScore));
-  }, []);
+    // setPlayersState(prev => [...prev].sort((a, b) => b.totalScore - a.totalScore));
+  }, [players]);
 
   // Demo trigger: every random 5-10 seconds update a random player's score
   // useEffect(() => {
@@ -64,7 +59,7 @@ const Leaderboard = () => {
         <div>TOTAL</div>
         <div>PERCENT</div>
       </div>
-      {players.map((player, index) => (
+      { playersState.map((player, index) => (
         <PlayerRow key={player.id} player={player} rank={index + 1} />
       ))}
     </div>

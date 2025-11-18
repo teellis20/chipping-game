@@ -24,7 +24,7 @@ const ScoreInput = ({ onSubmit }) => {
       return;
     }
     const percentage = (percent / 24) * 100;
-    onSubmit({ player, score, percentage: percentage.toFixed(0) });
+    onSubmit({ name: player, totalScore: score, percent: parseInt(percentage.toFixed(0)) });
     setScore(0);
     setPercent(0);
     setPlayer("");
