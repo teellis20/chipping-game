@@ -1,8 +1,7 @@
 import dbConnect from "@/app/lib/dbConnect";
-    
+
 export async function GET() {
-    const dbStatus = await dbConnect(); 
-    // console.log('checking database connection from /api/set-up', dbStatus);
+    const dbStatus = await dbConnect();
     if (dbStatus.connection.readyState !== 1) {
         return new Response(JSON.stringify({ message: "Database connection failed" }), {
             status: 500,

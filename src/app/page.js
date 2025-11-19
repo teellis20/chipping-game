@@ -1,7 +1,10 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Leaderboard from "./Components/Leaderboard/Leaderboard";
 import ScoreInput from "./Components/ScoreInput/ScoreInput";
+
+// import io from 'socket.io-client';
+import { socket } from '../socket';
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
@@ -38,7 +41,7 @@ export default function Home() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data.players);
+        // console.log(data.players);
         setPlayers(data.players);
       } catch (error) {
         console.error('Failed to fetch players:', error);
@@ -50,6 +53,22 @@ export default function Home() {
     }
   }, [dbConnected]);
 
+  useEffect(() => {
+    if (socket.connected) {
+      socket.on('scoreUpdate', (data) => {
+        // console.log('Received score update via Socket.io:', data);
+        setPlayers((prevPlayers) => {
+          return prevPlayers.map((p) => {
+            if (p.name === data.name) {
+              return { ...p, totalScore: data.totalScore, percent: data.percent };
+            }
+            return p;
+          });
+        });
+      });
+    }
+
+  }, []);
 
   const getMondayofWeek = () => {
     const today = new Date();
@@ -121,6 +140,7 @@ export default function Home() {
       });
       const result = await response.json();
       console.log('Score submission response:', result.message);
+      socket.emit('scoreUpdate', playerToSend);
 
     } catch (error) {
       console.error('Error submitting score:', error);
