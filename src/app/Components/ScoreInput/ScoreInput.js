@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './ScoreInput.css';
 
 const ScoreInput = ({ onSubmit, players }) => {
@@ -12,11 +12,15 @@ const ScoreInput = ({ onSubmit, players }) => {
       alert("Please select a player.");
       return false;
     }
-    if (percent > 24) {
-        setPercent(24);
-    }
+
     return true;
   }
+
+  useEffect(() => {
+    if (percent > 24) {
+      console.log("Percent cannot be greater than 24. Setting to 24.");
+      setPercent(24);
+    }}, [percent]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

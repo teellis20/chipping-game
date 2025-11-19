@@ -53,10 +53,10 @@ export default function Home() {
     }
   }, [dbConnected]);
 
-  useEffect(() => {
+  // useEffect(() => {
     if (socket.connected) {
       socket.on('scoreUpdate', (data) => {
-        // console.log('Received score update via Socket.io:', data);
+        console.log('Received score update via Socket.io:');
         setPlayers((prevPlayers) => {
           return prevPlayers.map((p) => {
             if (p.name === data.name) {
@@ -66,9 +66,13 @@ export default function Home() {
           });
         });
       });
+
+      socket.on('connect', () => {
+        console.log('Socket connected to server');
+      })
     }
 
-  }, []);
+  // }, []);
 
   const getMondayofWeek = () => {
     const today = new Date();
@@ -98,7 +102,7 @@ export default function Home() {
   }
 
   const checkIfBetterThanCurrentBest = (newData) => {
-    console.log('Checking new data against current best:', newData);
+    // console.log('Checking new data against current best:', newData);
     let playerToSend = null;
     const player = players.find(p => p.name === newData.name);
     if (!player) return false;
@@ -109,7 +113,7 @@ export default function Home() {
       
     const newScore = newData.totalScore > player.totalScore ? newData.totalScore : player.totalScore;
     const newPercent = newData.percent > player.percent ? newData.percent : player.percent;
-    console.log('Updating player with new score and percent:', newScore, newPercent);
+    // console.log('Updating player with new score and percent:', newScore, newPercent);
 
     const updatedPlayers = players.map(p => {
       if (p.name === newData.name) {
@@ -123,7 +127,7 @@ export default function Home() {
   }
 
   const handleScoreSubmit = async (data) => {
-    console.log("Score submitted:", data);
+    // console.log("Score submitted:", data);
     const playerToSend = checkIfBetterThanCurrentBest(data);
     if (!playerToSend) {
       console.log('Submitted score was not better than current best, not sending to backend.');
@@ -139,7 +143,7 @@ export default function Home() {
         body: JSON.stringify(playerToSend),
       });
       const result = await response.json();
-      console.log('Score submission response:', result.message);
+      // console.log('Score submission response:', result.message);
       socket.emit('scoreUpdate', playerToSend);
 
     } catch (error) {
