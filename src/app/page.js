@@ -80,6 +80,7 @@ export default function Home() {
 
   const checkIfBetterThanCurrentBest = (newData) => {
     console.log('Checking new data against current best:', newData);
+    let playerToSend = null;
     const player = players.find(p => p.name === newData.name);
     if (!player) return false;
     if (newData.totalScore <= player.totalScore && newData.percent <= player.percent) {
@@ -93,17 +94,19 @@ export default function Home() {
 
     const updatedPlayers = players.map(p => {
       if (p.name === newData.name) {
-        return { ...p, totalScore: newScore, percent: newPercent };
+        playerToSend = { ...p, totalScore: newScore, percent: newPercent };
+        return playerToSend;
       }
       return p;
     });
     setPlayers(updatedPlayers);
-    return true;  
+    return playerToSend;  
   }
 
   const handleScoreSubmit = async (data) => {
     console.log("Score submitted:", data);
-    if (!checkIfBetterThanCurrentBest(data)) {
+    const playerToSend = checkIfBetterThanCurrentBest(data);
+    if (!playerToSend) {
       console.log('Submitted score was not better than current best, not sending to backend.');
       return;
     }
@@ -114,7 +117,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(playerToSend),
       });
       const result = await response.json();
       console.log('Score submission response:', result.message);
