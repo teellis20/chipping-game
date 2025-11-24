@@ -16,6 +16,8 @@ export async function GET() {
 
     const winner = players.reduce((prev, current) => (prev.totalScore > current.totalScore) ? prev : current);
 
+    console.log('Determined winner:', winner);
+
     // Save the last winner to the LastWinner collection
     await LastWinner.deleteMany({});
     const newLastWinner = new LastWinner(winner);

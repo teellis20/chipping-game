@@ -2,6 +2,7 @@
 import { useState, useEffect, use } from "react";
 import Leaderboard from "./Components/Leaderboard/Leaderboard";
 import ScoreInput from "./Components/ScoreInput/ScoreInput";
+import LastWinnerModal from "./Components/LastWinnerModal/LastWinnerModal";
 
 // import io from 'socket.io-client';
 import { socket } from '../socket';
@@ -10,6 +11,8 @@ export default function Home() {
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dbConnected, setDbConnected] = useState(false);
+  const [lastWinnerModalOpen, setLastWinnerModalOpen] = useState(false);
+  const [lastWinner, setLastWinner] = useState(null);
 
   useEffect(() => {
     const checkDbConnection = async () => {
@@ -94,7 +97,8 @@ export default function Home() {
     try {
       const response = await fetch('/api/last-winner');
       const data = await response.json();
-      alert(`Last week's winner was ${data.winner[0].name} with a score of ${data.winner[0].totalScore} and a percentage of ${data.winner[0].percent}%!`);
+      setLastWinner(data.winner[0]);
+      setLastWinnerModalOpen(true);
     } catch (error) {
       console.error('Failed to fetch last week\'s winner:', error);
       alert("Failed to fetch last week's winner.");
@@ -176,6 +180,11 @@ export default function Home() {
         >
           Last Week's Winner
         </button>
+        <LastWinnerModal
+          isOpen={lastWinnerModalOpen}
+          onClose={() => setLastWinnerModalOpen(false)}
+          winner={lastWinner}
+        />
     </div>
     </>
   );
